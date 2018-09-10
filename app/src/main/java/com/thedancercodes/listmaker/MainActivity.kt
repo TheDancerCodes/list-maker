@@ -18,6 +18,9 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var listsRecyclerView: RecyclerView
 
+    // Instancing the List Manager class
+    val listDataManager: ListDataManager = ListDataManager(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
