@@ -1,6 +1,7 @@
 package com.thedancercodes.listmaker
 
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.ViewGroup
 
 /**
@@ -11,8 +12,14 @@ class ListSelectionRecyclerViewAdapter : RecyclerView.Adapter<ListSelectionViewH
     // Instance variable to contain our list
     val listTitles = arrayOf("Shopping List", "Chores", "Android Tuts")
 
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ListSelectionViewHolder {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ListSelectionViewHolder {
+
+        // Reference the ViewHolder view
+        val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.list_selection_view_holder, parent, false)
+
+        // Create an instance of ViewHolder and pass in the view.
+        return ListSelectionViewHolder(view)
     }
 
     // Returns number of items in the list
@@ -21,6 +28,6 @@ class ListSelectionRecyclerViewAdapter : RecyclerView.Adapter<ListSelectionViewH
     }
 
     override fun onBindViewHolder(p0: ListSelectionViewHolder, p1: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 }
