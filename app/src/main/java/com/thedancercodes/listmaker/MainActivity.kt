@@ -1,5 +1,6 @@
 package com.thedancercodes.listmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
@@ -20,6 +21,11 @@ class MainActivity : AppCompatActivity() {
 
     // Instancing the List Manager class
     val listDataManager: ListDataManager = ListDataManager(this)
+
+    // The List Key
+    companion object {
+        val INTENT_LIST_KEY = "key"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,5 +92,12 @@ class MainActivity : AppCompatActivity() {
         })
 
         builder.create().show()
+    }
+
+    private fun showListDetail(list: TaskList) {
+
+        val listDetailIntent = Intent(this, ListDetailActivity::class.java)
+        listDetailIntent.putExtra(INTENT_LIST_KEY, list)
+        startActivity(listDetailIntent)
     }
 }
