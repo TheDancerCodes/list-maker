@@ -27,7 +27,14 @@ class ListSelectionRecyclerViewAdapter : RecyclerView.Adapter<ListSelectionViewH
         return listTitles.size
     }
 
-    override fun onBindViewHolder(p0: ListSelectionViewHolder, p1: Int) {
+    override fun onBindViewHolder(holder: ListSelectionViewHolder, position: Int) {
+
+        // Check whether holder exists
+        if (holder != null) {
+            holder.listPosition.text = (position + 1).toString()
+            holder.listTitle.text = listTitles[position] // Pass in position to listTitles array
+        }
+
 
     }
 }
