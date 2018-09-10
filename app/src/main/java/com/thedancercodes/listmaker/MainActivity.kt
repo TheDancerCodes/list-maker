@@ -30,10 +30,14 @@ class MainActivity : AppCompatActivity() {
             showCreateListDialog()
         }
 
+        // Get data from SharedPreferences
+        val lists = listDataManager.readLists()
+
+
         // Reference the RecyclerView
         listsRecyclerView = findViewById<RecyclerView>(R.id.lists_recyclerview)
         listsRecyclerView.layoutManager = LinearLayoutManager(this)
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter()
+        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -69,6 +73,15 @@ class MainActivity : AppCompatActivity() {
         builder.setView(listTitleEditText)
 
         builder.setPositiveButton(positiveButtonTitle, { dialog, i ->
+
+            val list = TaskList(listTitleEditText.text.toString()) // Create new empty Task List
+            listDataManager.saveList(list) // Save the list
+
+            // Reference to our Recycler Adapter so that we can update the RecyclerView
+            // with the new data
+            val recyclerAdapter = listsRecyclerView.adapter as ListSelectionRecyclerViewAdapter
+            recyclerAdapter.addList(list)
+
             dialog.dismiss()
         })
 

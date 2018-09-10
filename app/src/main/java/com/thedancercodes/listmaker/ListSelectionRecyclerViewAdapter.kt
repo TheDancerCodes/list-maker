@@ -7,10 +7,7 @@ import android.view.ViewGroup
 /**
  * Created by TheDancerCodes on 10/09/2018.
  */
-class ListSelectionRecyclerViewAdapter : RecyclerView.Adapter<ListSelectionViewHolder>() {
-
-    // Instance variable to contain our list
-    val listTitles = arrayOf("Shopping List", "Chores", "Android Tuts")
+class ListSelectionRecyclerViewAdapter(val lists: ArrayList<TaskList>) : RecyclerView.Adapter<ListSelectionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ListSelectionViewHolder {
 
@@ -24,7 +21,7 @@ class ListSelectionRecyclerViewAdapter : RecyclerView.Adapter<ListSelectionViewH
 
     // Returns number of items in the list
     override fun getItemCount(): Int {
-        return listTitles.size
+        return lists.size
     }
 
     override fun onBindViewHolder(holder: ListSelectionViewHolder, position: Int) {
@@ -32,9 +29,15 @@ class ListSelectionRecyclerViewAdapter : RecyclerView.Adapter<ListSelectionViewH
         // Check whether holder exists
         if (holder != null) {
             holder.listPosition.text = (position + 1).toString()
-            holder.listTitle.text = listTitles[position] // Pass in position to listTitles array
+            holder.listTitle.text = lists.get(position).name
         }
+    }
 
+    // Function that adds a list to the RecyclerView
+    fun addList(list: TaskList) {
+        lists.add(list) // Takes a task list and adds it to the lists variable.
 
+        // Updates adapter when it knows about the data change & RecyclerView updates automatically
+        notifyDataSetChanged()
     }
 }
