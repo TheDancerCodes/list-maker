@@ -7,7 +7,7 @@ import android.view.ViewGroup
 /**
  * Created by TheDancerCodes on 10/09/2018.
  */
-class ListSelectionRecyclerViewAdapter(val lists: ArrayList<TaskList>) : RecyclerView.Adapter<ListSelectionViewHolder>() {
+class ListSelectionRecyclerViewAdapter(val lists: ArrayList<TaskList>, val clickListener: ListSelectionRecyclerViewClickListener) : RecyclerView.Adapter<ListSelectionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): ListSelectionViewHolder {
 
@@ -24,12 +24,22 @@ class ListSelectionRecyclerViewAdapter(val lists: ArrayList<TaskList>) : Recycle
         return lists.size
     }
 
+    interface ListSelectionRecyclerViewClickListener {
+
+        fun listItemClicked(list: TaskList)
+    }
+
     override fun onBindViewHolder(holder: ListSelectionViewHolder, position: Int) {
 
         // Check whether holder exists
         if (holder != null) {
             holder.listPosition.text = (position + 1).toString()
             holder.listTitle.text = lists.get(position).name
+
+            // Add ClickListener
+            holder.itemView.setOnClickListener {
+                clickListener.listItemClicked(lists.get(position))
+            }
         }
     }
 

@@ -14,7 +14,8 @@ import android.widget.EditText
 
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),
+        ListSelectionRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
 
 
     lateinit var listsRecyclerView: RecyclerView
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         // Reference the RecyclerView
         listsRecyclerView = findViewById<RecyclerView>(R.id.lists_recyclerview)
         listsRecyclerView.layoutManager = LinearLayoutManager(this)
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists)
+        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -89,6 +90,9 @@ class MainActivity : AppCompatActivity() {
             recyclerAdapter.addList(list)
 
             dialog.dismiss()
+
+            // Show the List Item: When a user creates a new list, app passes it to the new Activity
+            showListDetail(list)
         })
 
         builder.create().show()
@@ -99,5 +103,10 @@ class MainActivity : AppCompatActivity() {
         val listDetailIntent = Intent(this, ListDetailActivity::class.java)
         listDetailIntent.putExtra(INTENT_LIST_KEY, list)
         startActivity(listDetailIntent)
+    }
+
+    // Implement listItemClicked() method
+    override fun listItemClicked(list: TaskList) {
+        showListDetail(list)
     }
 }
