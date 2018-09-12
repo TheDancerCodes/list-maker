@@ -1,5 +1,7 @@
 package com.thedancercodes.listmaker
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AlertDialog
@@ -58,5 +60,20 @@ class ListDetailActivity : AppCompatActivity() {
             dialog.dismiss()
 
         }).create().show()
+    }
+
+    // Save list when user taps back button
+    override fun onBackPressed() {
+
+        // Create Bundle and put list inside it
+        val bundle = Bundle()
+        bundle.putParcelable(MainActivity.INTENT_LIST_KEY, list)
+
+        // Send result back to Activity notifying all is OK.
+        val intent = Intent()
+        intent.putExtras(bundle)
+        setResult(Activity.RESULT_OK, intent)
+
+        super.onBackPressed()
     }
 }

@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(),
     // The List Key
     companion object {
         val INTENT_LIST_KEY = "key"
+        val LIST_DETAIL_REQUEST_CODE = 123 // A code to identify the activity we launch
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,11 +103,35 @@ class MainActivity : AppCompatActivity(),
 
         val listDetailIntent = Intent(this, ListDetailActivity::class.java)
         listDetailIntent.putExtra(INTENT_LIST_KEY, list)
-        startActivity(listDetailIntent)
+
+        // Launch another activity and get results back from that launched activity.
+        startActivityForResult(listDetailIntent, LIST_DETAIL_REQUEST_CODE)
     }
 
     // Implement listItemClicked() method
     override fun listItemClicked(list: TaskList) {
         showListDetail(list)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // Check The Request Code
+        if (requestCode == LIST_DETAIL_REQUEST_CODE) {
+
+            data?.let {
+
+                // Save the List from the Bundle
+                listDataManager.saveList(data.getParcelableExtra(INTENT_LIST_KEY))
+
+                // Update RecyclerView
+                updateLists()
+            }
+        }
+    }
+
+    private fun updateLists() {
+        val lists = listDataManager.readLists()
+        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
     }
 }
