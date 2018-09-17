@@ -3,6 +3,8 @@ package com.thedancercodes.listmaker
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,10 +24,16 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class ListSelectionFragment : Fragment() {
+class ListSelectionFragment : Fragment(),
+        ListSelectionRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
 
 
     private var listener: OnFragmentInteractionListener? = null
+
+    lateinit var listsRecyclerView: RecyclerView
+
+    // Instancing the List Manager class
+    lateinit var listDataManager: ListDataManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +51,19 @@ class ListSelectionFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
-            listener = context
+            listener = context // Best way to pass in a context in a fragment.
+
+            // Reference to our ListDataManager
+            listDataManager = ListDataManager(context)
+
         } else {
             throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
         }
+    }
+
+    // Notify listener when list item is clicked
+    override fun listItemClicked(list: TaskList) {
+        listener?.onListItemClicked(list)
     }
 
     // The Final Lifecycle Method called by the Fragment.
@@ -72,6 +89,23 @@ class ListSelectionFragment : Fragment() {
         fun onListItemClicked(list: TaskList)
     }
 
+    fun addList(list: TaskList) {
+        listDataManager.saveList(list)
+
+        val recyclerAdapter = listsRecyclerView.adapter as ListSelectionRecyclerViewAdapter
+        recyclerAdapter.addList(list)
+    }
+
+    fun saveList(list: TaskList) {
+        listDataManager.saveList(list)
+        updateLists()
+    }
+
+    private fun updateLists() {
+        val lists = listDataManager.readLists()
+        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -88,5 +122,25 @@ class ListSelectionFragment : Fragment() {
             return fragment
         }
     }
-} // Require empty public constructor
+
+    // This method runs when the Activity that the Fragment is attached to has finished running
+    // onCreate. This ensures you have an Activity to work with & something to show your widgets.
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        // Get data from SharedPreferences
+        val lists = listDataManager.readLists()
+
+        // Check whether we are working with a View
+        view?.let {
+
+            // Reference the RecyclerView
+            listsRecyclerView = it.findViewById<RecyclerView>(R.id.lists_recyclerview)
+            listsRecyclerView.layoutManager = LinearLayoutManager(activity)
+            listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
+        }
+
+    }
+
+}
 

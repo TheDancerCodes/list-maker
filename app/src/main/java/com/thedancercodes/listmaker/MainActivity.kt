@@ -15,13 +15,9 @@ import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(),
-        ListSelectionRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
+        ListSelectionFragment.OnFragmentInteractionListener {
 
-
-    lateinit var listsRecyclerView: RecyclerView
-
-    // Instancing the List Manager class
-    val listDataManager: ListDataManager = ListDataManager(this)
+    private var listSelectionFragment: ListSelectionFragment = ListSelectionFragment()
 
     // The List Key
     companion object {
@@ -38,14 +34,6 @@ class MainActivity : AppCompatActivity(),
             showCreateListDialog()
         }
 
-        // Get data from SharedPreferences
-        val lists = listDataManager.readLists()
-
-
-        // Reference the RecyclerView
-        listsRecyclerView = findViewById<RecyclerView>(R.id.lists_recyclerview)
-        listsRecyclerView.layoutManager = LinearLayoutManager(this)
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -83,12 +71,8 @@ class MainActivity : AppCompatActivity(),
         builder.setPositiveButton(positiveButtonTitle, { dialog, i ->
 
             val list = TaskList(listTitleEditText.text.toString()) // Create new empty Task List
-            listDataManager.saveList(list) // Save the list
 
-            // Reference to our Recycler Adapter so that we can update the RecyclerView
-            // with the new data
-            val recyclerAdapter = listsRecyclerView.adapter as ListSelectionRecyclerViewAdapter
-            recyclerAdapter.addList(list)
+            listSelectionFragment.addList(list) // Save the list
 
             dialog.dismiss()
 
@@ -109,7 +93,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     // Implement listItemClicked() method
-    override fun listItemClicked(list: TaskList) {
+    override fun onListItemClicked(list: TaskList) {
         showListDetail(list)
     }
 
@@ -121,17 +105,8 @@ class MainActivity : AppCompatActivity(),
 
             data?.let {
 
-                // Save the List from the Bundle
-                listDataManager.saveList(data.getParcelableExtra(INTENT_LIST_KEY))
-
-                // Update RecyclerView
-                updateLists()
+                listSelectionFragment.saveList(data.getParcelableExtra(INTENT_LIST_KEY))
             }
         }
-    }
-
-    private fun updateLists() {
-        val lists = listDataManager.readLists()
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
     }
 }
